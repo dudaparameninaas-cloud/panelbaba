@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ query_name }} - Sorgu Paneli</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #151522 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: #0d0d0d;
+            padding: 15px 20px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .logo span {
+            color: #ff0000;
+        }
+
+        .back-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .query-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .query-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .query-header h1 {
+            color: #ff0000;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .query-header p {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .query-form {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #333;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {                                                                                                                                         display: block;
+            color: #ddd;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #222;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .result-container {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #333;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;                                                                                                                                    padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .result-header h2 {
+            color: #4CAF50;
+            font-size: 20px;
+        }
+                                                                                                                                                                .copy-btn {
+            background-color: #3498db;
+            color: white;                                                                                                                                           border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .result-content {
+            background-color: #000;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            color: #0f0;
+            border: 1px solid #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #ff9900;
+            display: none;
+        }
+
+        .loading i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+            display: none;
+        }
+
+        .success-message {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #2ecc71;
+            display: none;
+        }
+
+        /* API bilgisi kaldırıldı - bu sınıf artık yok */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span>Sorgu Paneli</span> - {{ query_name }}
+        </div>
+        <button class="back-btn" onclick="window.location.href='/'">
+            <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
+        </button>
+    </div>
+
+    <div class="query-container">
+        <div class="query-header">
+            <h1>{{ query_name }}</h1>
+            <p>Sorgu bilgilerini girin ve "Sorgula" butonuna tıklayın</p>
+        </div>
+
+        <!-- API bilgileri kaldırıldı -->
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <div class="query-form" id="queryForm">
+            <!-- Form dinamik olarak JavaScript ile oluşturulacak -->
+        </div>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Sorgu çalıştırılıyor, lütfen bekleyin...</p>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">
+                <h2>Sorgu Sonucu</h2>
+                <button class="copy-btn" id="copyResultBtn">
+                    <i class="fas fa-copy"></i> Sonucu Kopyala
+                </button>
+            </div>
+            <div class="result-content" id="resultContent">
+                <!-- Sorgu sonuçları buraya gelecek -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const queryKey = "{{ query_key }}";
+
+        // Sayfa yüklendiğinde formu oluştur
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQueryInfo();
+        });
+
+        function loadQueryInfo() {
+            fetch(`/api/get_query_info/${queryKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showError(data.error);
+                        return;
+                    }
+
+                    // API bilgilerini GÖSTERMİYORUZ - kaldırıldı
+
+                    // Formu oluştur
+                    createForm(data.required_params);
+                })
+                .catch(error => {
+                    showError('Sorgu bilgileri yüklenirken hata oluştu.');
+                });
+        }
+
+        function createForm(params) {
+            const form = document.getElementById('queryForm');
+            let formHTML = '';
+
+            if (params.length === 0) {
+                formHTML = `
+                    <p style="color: #aaa; text-align: center; margin-bottom: 20px;">
+                        Bu sorgu için ek parametre gerekmiyor.
+                    </p>
+                `;
+            } else {
+                params.forEach(param => {
+                    // Parametre adını Türkçeleştir
+                    let label = param;
+                    if (param === 'plaka') label = 'Plaka Numarası';
+                    else if (param === 'ad') label = 'Ad';
+                    else if (param === 'soyad') label = 'Soyad';
+                    else if (param === 'tc') label = 'TC Kimlik No';
+                    else if (param === 'gsm') label = 'Telefon Numarası';
+                    else if (param === 'name') label = 'Ad';
+                    else if (param === 'surname') label = 'Soyad';
+                    else if (param === 'id') label = 'ID Numarası';
+                    else if (param === 'paparano') label = 'Papara Numarası';
+
+                    formHTML += `
+                        <div class="form-group">
+                            <label for="${param}">${label}</label>
+                            <input type="text" id="${param}" name="${param}"
+                                   placeholder="${label} giriniz..." required>
+                        </div>
+                    `;
+                });
+            }
+
+            formHTML += `
+                <button type="button" class="submit-btn" onclick="executeQuery()">
+                    <i class="fas fa-search"></i> Sorgula
+                </button>
+            `;
+
+            form.innerHTML = formHTML;
+        }
+
+        function executeQuery() {
+            const params = {};
+            const form = document.getElementById('queryForm');
+            const inputs = form.querySelectorAll('input');
+
+            // Tüm input değerlerini al
+            inputs.forEach(input => {
+                if (input.value.trim()) {
+                    params[input.name] = input.value.trim();
+                }
+            });
+
+            // Loading göster
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            hideMessages();
+
+            // Sorguyu çalıştır
+            fetch('/api/execute_query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query_key: queryKey,
+                    params: params
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Loading gizle
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.success) {
+                    // Başarılı mesajı göster
+                    showSuccess('Sorgu başarıyla tamamlandı!');
+
+                    // Sadece sonuçları göster - API URL ve durum kodu GÖSTERİLMİYOR
+                    document.getElementById('resultContent').textContent = data.response;
+
+                    document.getElementById('resultContainer').style.display = 'block';
+
+                    // Sayfayı sonuca kaydır
+                    document.getElementById('resultContainer').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                } else {
+                    showError('Sorgu hatası: ' + data.error);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                showError('Sorgu çalıştırılırken hata oluştu.');
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorDiv.style.display = 'block';
+
+            // 5 saniye sonra gizle
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            successDiv.style.display = 'block';
+
+            // 3 saniye sonra gizle
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Sonucu kopyala butonu
+        document.getElementById('copyResultBtn').addEventListener('click', function() {
+            const resultText = document.getElementById('resultContent').textContent;
+            navigator.clipboard.writeText(resultText)
+                .then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
+
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    showError('Kopyalama başarısız.');
+                });
+        });
+    </script>
+</body>
+</html>
