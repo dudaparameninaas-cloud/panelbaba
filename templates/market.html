@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market - Sorgu Paneli</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {                                                                                                                                                         margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #151522 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background-color: #0d0d0d;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+        }                                                                                                                                               
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .logo span {
+            color: #ff0000;
+        }
+
+        .back-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Market Container */
+        .market-container {                                                                                                                                         max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            color: #ff0000;
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .page-header p {
+            color: #aaa;
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .balance-info h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .add-balance-btn {
+            background-color: #fff;
+            color: #3498db;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .add-balance-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #333;
+            color: #ddd;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff0000;
+        }
+
+        .category-btn.active {
+            background: rgba(255, 0, 0, 0.3);
+            border-color: #ff0000;
+            color: #fff;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #333;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: #ff0000;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #f39c12;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .product-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #ff0000;
+        }
+
+        .product-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-desc {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f39c12;
+            margin-bottom: 20px;
+        }
+
+        .telegram-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .telegram-btn:hover {
+            background-color: #0077b5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+        }
+
+        .telegram-btn.vip {
+            background-color: #f39c12;
+        }
+
+        .telegram-btn.vip:hover {
+            background-color: #e67e22;
+        }
+
+        /* Transactions */
+        .transactions-section {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #333;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .transactions-list {
+            list-style: none;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3498db;
+        }
+
+        .transaction-details h4 {
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .transaction-amount.positive {
+            color: #2ecc71;
+        }
+
+        .transaction-amount.negative {
+            color: #e74c3c;
+        }
+
+        /* Support */
+        .support-card {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .support-card h3 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .support-card p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .telegram-support-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: white;
+            color: #2ecc71;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .telegram-support-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span>Sorgu Paneli</span> - Market
+        </div>
+        <button class="back-btn" onclick="window.location.href='/dashboard'">
+            <i class="fas fa-arrow-left"></i> Dashboard'a Dön
+        </button>
+    </div>
+
+    <div class="market-container">
+        <div class="page-header">
+            <h1>Premium Market</h1>
+            <p>Özel sorgu paketleri, API erişimleri ve premium ürünler</p>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-info">
+                <h3>Cüzdan Bakiyeniz</h3>
+                <div class="balance-amount">₺0.00</div>
+            </div>
+            <button class="add-balance-btn" onclick="addBalance()">
+                <i class="fas fa-plus"></i> Bakiye Yükle
+            </button>
+        </div>
+
+        <div class="categories">
+            <button class="category-btn active" onclick="filterProducts('all')">Tümü</button>
+            <button class="category-btn" onclick="filterProducts('sorgu')">Sorgu Paketleri</button>
+            <button class="category-btn" onclick="filterProducts('api')">API Erişimleri</button>
+            <button class="category-btn" onclick="filterProducts('tools')">Araçlar</button>
+            <button class="category-btn" onclick="filterProducts('vip')">VIP Ürünler</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Sorgu Paketleri -->
+            <div class="product-card" data-category="sorgu">
+                <div class="product-badge">POPÜLER</div>
+                <div class="product-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="product-title">100 Sorgu Paketi</div>
+                <div class="product-desc">
+                    100 adet sorgu hakkı. Tüm sorgu tiplerinde kullanılabilir. 30 gün geçerlidir.
+                </div>
+                <div class="product-price">₺49</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn">
+                    <i class="fab fa-telegram"></i> Telegram'dan Satın Al
+                </a>
+            </div>
+
+            <div class="product-card" data-category="sorgu">
+                <div class="product-icon">
+                    <i class="fas fa-infinity"></i>
+                </div>
+                <div class="product-title">500 Sorgu Paketi</div>
+                <div class="product-desc">
+                    500 adet sorgu hakkı. Ekonomik paket. 60 gün geçerlidir.
+                </div>
+                <div class="product-price">₺199</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn">
+                    <i class="fab fa-telegram"></i> Telegram'dan Satın Al
+                </a>
+            </div>
+
+            <!-- API Erişimleri -->
+            <div class="product-card" data-category="api">
+                <div class="product-badge">YENİ</div>
+                <div class="product-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="product-title">API Anahtarı</div>
+                <div class="product-desc">
+                    Kendi uygulamanızda kullanmak için API anahtarı. 1000 sorgu/gün limit.
+                </div>
+                <div class="product-price">₺299</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn">
+                    <i class="fab fa-telegram"></i> Telegram'dan Satın Al
+                </a>
+            </div>
+
+            <div class="product-card" data-category="api">
+                <div class="product-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="product-title">Premium API</div>
+                <div class="product-desc">
+                    Limitsiz API erişimi. Öncelikli sunucu. 7/24 teknik destek.
+                </div>
+                <div class="product-price">₺999</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn">
+                    <i class="fab fa-telegram"></i> Telegram'dan Satın Al
+                </a>
+            </div>
+
+            <!-- Araçlar -->
+            <div class="product-card" data-category="tools">
+                <div class="product-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="product-title">Toplu Sorgu Aracı</div>
+                <div class="product-desc">
+                    Excel/CSV dosyalarından toplu sorgu yapma aracı. Windows/Mac/Linux.
+                </div>
+                <div class="product-price">₺149</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn">
+                    <i class="fab fa-telegram"></i> Telegram'dan Satın Al
+                </a>
+            </div>                                                                                                                                      
+            <div class="product-card" data-category="tools">
+                <div class="product-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="product-title">Raporlama Modülü</div>
+                <div class="product-desc">
+                    Detaylı sorgu raporları ve analiz araçları. PDF/Excel çıktı.
+                </div>
+                <div class="product-price">₺249</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn">
+                    <i class="fab fa-telegram"></i> Telegram'dan Satın Al
+                </a>
+            </div>
+
+            <!-- VIP Ürünler -->
+            <div class="product-card" data-category="vip">
+                <div class="product-badge">VIP</div>
+                <div class="product-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="product-title">VIP Aylık Üyelik</div>
+                <div class="product-desc">
+                    50+ özel sorgu, limitsiz kullanım, öncelikli destek, tüm özellikler.
+                </div>
+                <div class="product-price">₺500</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn vip">
+                    <i class="fas fa-crown"></i> Telegram'dan Satın Al
+                </a>
+            </div>
+
+            <div class="product-card" data-category="vip">
+                <div class="product-badge">VIP</div>
+                <div class="product-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <div class="product-title">VIP Yıllık Üyelik</div>
+                <div class="product-desc">
+                    2 ay bedava! Tüm VIP özellikleri + özel indirimler.
+                </div>
+                <div class="product-price">₺1.999</div>
+                <a href="https://t.me/Yenilenme" target="_blank" class="telegram-btn vip">
+                    <i class="fas fa-gem"></i> Telegram'dan Satın Al
+                </a>
+            </div>
+        </div>
+
+        <div class="transactions-section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i> Son İşlemler
+            </h2>
+            <ul class="transactions-list">
+                <li class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>VIP Aylık Üyelik</h4>
+                            <div class="transaction-date">01 Şub 2024</div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount negative">-₺199</div>
+                </li>
+
+                <li class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>Bakiye Yükleme</h4>
+                            <div class="transaction-date">28 Oca 2024</div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount positive">+₺500</div>
+                </li>
+
+                <li class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>100 Sorgu Paketi</h4>
+                            <div class="transaction-date">15 Oca 2024</div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount negative">-₺49</div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="support-card">
+            <h3>Yardıma mı ihtiyacınız var?</h3>
+            <p>Satın alma işlemleri için Telegram üzerinden iletişime geçin.</p>
+            <a href="https://t.me/Yenilenme" target="_blank" class="telegram-support-btn">
+                <i class="fab fa-telegram"></i> @Yenilenme - Telegram Destek
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function filterProducts(category) {
+            const products = document.querySelectorAll('.product-card');
+            const buttons = document.querySelectorAll('.category-btn');
+
+            // Butonları güncelle
+            buttons.forEach(btn => {
+                if (btn.textContent.includes(category === 'all' ? 'Tümü' :
+                    category === 'sorgu' ? 'Sorgu' :
+                    category === 'api' ? 'API' :
+                    category === 'tools' ? 'Araçlar' : 'VIP')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Ürünleri filtrele
+            products.forEach(product => {
+                if (category === 'all' || product.dataset.category === category) {
+                    product.style.display = 'block';
+                    setTimeout(() => {
+                        product.style.opacity = '1';
+                        product.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    product.style.opacity = '0';
+                    product.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        product.style.display = 'none';
+                    }, 300);
+                }
+            });
+        }
+
+        function addBalance() {
+            alert('Bakiye yükleme için Telegram üzerinden iletişime geçin: @Yenilenme');
+        }
+
+        // Sayfa yüklendiğinde ürünlere animasyon ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            const products = document.querySelectorAll('.product-card');
+            products.forEach((product, index) => {
+                product.style.opacity = '0';
+                product.style.transform = 'translateY(20px)';
+                product.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+                setTimeout(() => {
+                    product.style.opacity = '1';
+                    product.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
