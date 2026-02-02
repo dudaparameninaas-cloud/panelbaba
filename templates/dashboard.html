@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sorgu Paneli</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #151522 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Üst Kısım */
+        .header {
+            background-color: #0d0d0d;
+            padding: 10px 0 6px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #222;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: #ff0000;
+            margin-right: 8px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        }
+
+        /* Küçük Butonlar - Sol Tarafta */
+        .mini-buttons {
+            display: flex;
+            gap: 6px;
+            margin-left: 5px;
+        }
+
+        .mini-button {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .mini-button:hover {
+            transform: scale(1.15);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .hamburger-menu {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger-menu:hover {
+            transform: scale(1.1);
+        }
+
+        /* Kayar Yazı Animasyonu */
+        .scrolling-text-container {
+            background-color: #000;
+            padding: 6px 0;
+            margin-top: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            white-space: nowrap;
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 16px;
+            padding-left: 100%;
+            animation: scrollText 15s linear infinite;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        @keyframes scrollText {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* GIF Kutusu - Responsive - İKİ GIF YAN YANA */
+        .gif-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            margin: 10px auto;
+        }
+
+        .gif-item {
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            height: 140px;
+        }
+
+        .gif-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Kullanıcı İstatistikleri - Tablolar */
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .user-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        .stat-box {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Neon border animasyonu */
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffea, transparent);
+            animation: neonBorder 3s linear infinite;
+        }
+
+        .stat-box::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffea, transparent);
+            animation: neonBorder 3s linear infinite 1.5s;
+        }
+
+        @keyframes neonBorder {
+            0% {
+                left: -100%;
+            }
+            50%, 100% {
+                left: 100%;
+            }
+        }
+
+        .stat-box h3 {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-box p {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .total-users {
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .vip-users {
+            color: #FFC107;
+            text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+        }
+
+        .free-users {
+            color: #2196F3;
+            text-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+        }
+
+        /* Yan Menü - Çok Daha Küçük */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -220px;
+            width: 220px;
+            height: 100vh;
+            background-color: #111;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.7);
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        /* Menü Kapatma Butonu */
+        .menu-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .menu-close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .menu-header {
+            padding: 15px 15px 10px 15px;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            overflow: hidden;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #222;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .online-status {
+            color: #4CAF50;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .online-status i {
+            margin-right: 3px;
+            font-size: 8px;
+        }
+
+        .username {
+            color: #2196F3;
+            font-weight: bold;
+            font-size: 12px;
+            margin: 2px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .verified-badge {
+            color: #2196F3;
+            margin-left: 3px;
+            font-size: 10px;
+        }
+
+        .menu-content {
+            padding: 8px;
+            padding-bottom: 15px;
+        }
+
+        .menu-section {
+            margin-bottom: 6px;
+        }
+
+        /* Kategori başlıkları - Kırmızı ve çok kompakt */
+        .menu-section-header {
+            color: #ff0000 !important;
+            padding: 6px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            margin-bottom: 1px;
+            background: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+        }
+
+        .menu-section-header:hover {
+            background-color: rgba(255, 0, 0, 0.1) !important;
+            padding-left: 10px;
+        }
+
+        .menu-section-header i {
+            font-size: 10px;
+        }
+
+        .menu-items {
+            display: none;
+            padding-left: 5px;
+        }
+
+        .menu-items.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .menu-item {
+            padding: 4px 0;
+            color: #ddd;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            font-size: 11px;
+            cursor: pointer;
+            justify-content: space-between;
+        }
+
+        .menu-item:hover {
+            color: #fff;
+            padding-left: 6px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-item i {
+            margin-right: 6px;
+            width: 12px;
+            text-align: center;
+            font-size: 9px;
+        }
+
+        /* VIP/Free Badgeleri */
+        .badge {
+            font-size: 8px;
+            padding: 2px 5px;
+            border-radius: 8px;
+            font-weight: bold;
+            min-width: 32px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .free-badge {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .vip-badge {
+            background-color: #FFC107;
+            color: #000;
+        }
+
+        /* Çıkış Butonu */
+        .logout-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.02);
+        }
+
+        .logout-btn i {
+            margin-right: 8px;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            display: none;
+        }
+
+        .menu-overlay.active {
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 25px;
+            color: #666;
+            font-size: 12px;
+            border-top: 1px solid #222;
+        }
+
+        /* Buton ve Menü Container */
+        .top-left-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Responsive Düzenlemeler */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 18px;
+            }
+
+            .scrolling-text {
+                font-size: 14px;
+            }
+
+            .gif-item {
+                height: 120px;
+                margin: 10px 15px;
+            }
+
+            .stat-box p {
+                font-size: 22px;
+            }
+
+            .mini-buttons {
+                gap: 5px;
+            }
+
+            .mini-button {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+            }
+
+            .side-menu {
+                width: 200px;
+            }
+
+            .menu-item {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 16px;
+            }
+
+            .logo span {
+                margin-right: 5px;
+            }
+
+            .scrolling-text {
+                font-size: 12px;
+            }                                                                                                                                                                                                                                                                                                               .gif-item {
+                height: 100px;
+            }
+
+            .stat-box {
+                padding: 12px;
+            }
+
+            .stat-box p {
+                font-size: 20px;
+            }                                                                                                                                                                                                                                                                                                               .mini-button {
+                width: 24px;
+                height: 24px;
+            }
+
+            .side-menu {
+                width: 190px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Üst Kısım -->
+    <div class="header">
+        <div class="logo-container">
+            <div class="top-left-container">
+                <div class="mini-buttons">
+                    <button class="mini-button" style="background-color: #3498db;" title="Market">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>
+                    <button class="mini-button" style="background-color: #2ecc71;" title="Abonelik">
+                        <i class="fas fa-crown"></i>
+                    </button>
+                    <button class="mini-button" style="background-color: #e74c3c;" title="Sorgu Geçmişi">
+                        <i class="fas fa-history"></i>
+                    </button>
+                    <button class="mini-button" style="background-color: #9b59b6;" title="Ayarlar">
+                        <i class="fas fa-cogs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="logo">
+                <span>Sorgu Paneli</span>
+            </div>
+
+            <button class="hamburger-menu" id="menuToggle" title="Menü">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="scrolling-text-container">
+            <div class="scrolling-text">
+                Sorgu Paneli her zaman 1numara ;)
+            </div>
+        </div>
+    </div>
+
+    <!-- GIF Kutusu - İKİ GIF YAN YANA -->
+    <div class="gif-container">
+        <div class="gif-item">
+            <img src="https://i.ibb.co/FLNGPhQj/Hocam-bana-animasyonlu-taslar-arasinda-yanar-da-i-patlar-gibi-ekrana-donguyle-bi-anda-Sorgu-Panel-N.gif" alt="Sorgu Paneli Gif 1">
+        </div>
+        <div class="gif-item">
+            <img src="https://i.ibb.co/MDBvBYwh/Hocam-bana-animasyonlu-ekrana-bi-anda-yavas-cekimle-Sorgu-panel-N-yazisu-gelsin-yazi-rengi-kirmizi.gif" alt="Sorgu Paneli Gif 2">
+        </div>
+    </div>
+
+    <!-- Kullanıcı İstatistikleri - Tablolar -->
+    <div class="user-stats">
+        <div class="stat-box">
+            <h3>Kayıtlı Kullanıcı</h3>
+            <p class="total-users">0</p>
+        </div>
+        <div class="stat-box">
+            <h3>VIP Kullanıcı</h3>
+            <p class="vip-users">0</p>
+        </div>
+        <div class="stat-box">
+            <h3>Free Kullanıcı</h3>
+            <p class="free-users">0</p>
+        </div>
+    </div>
+
+    <!-- Yan Menü - Güncellenmiş -->
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <button class="menu-close-btn" id="menuClose" title="Menüyü Kapat">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="profile-pic">
+                <img src="https://i.ibb.co/CpSZFTbK/blank.jpg" alt="Profil Fotoğrafı">
+            </div>
+            <div class="user-info">
+                <div class="online-status">
+                    <i class="fas fa-circle"></i> Çevrimiçi
+                </div>
+                <div class="username">
+                    admin
+                    <i class="fas fa-check-circle verified-badge"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-content">
+            <!-- Plaka İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Plaka İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category1">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="plaka_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-car"></i> Plaka Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="plaka_ad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user"></i> Plaka Ad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="plaka_soyad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user"></i> Plaka Soyad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="plaka_adsoyad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-id-card"></i> Plaka Ad-Soyad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="plaka_text">
+                        <div class="menu-item-left">
+                            <i class="fas fa-search"></i> Plaka Text Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Papara İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Papara İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category2">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="papara_no">
+                        <div class="menu-item-left">
+                            <i class="fas fa-wallet"></i> Papara No Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="papara_ad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user"></i> Papara Ad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="papara_soyad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user"></i> Papara Soyad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="papara_adsoyad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-id-card"></i> Papara Ad-Soyad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TC Kimlik İşlemleri - HEPSİ FREE -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>TC Kimlik İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category3">
+                    <!-- TÜMÜ FREE -->
+                    <div class="menu-item" data-query="tc_sorgu1">
+                        <div class="menu-item-left">
+                            <i class="fas fa-id-card"></i> TC Sorgu 1
+                        </div>
+                        <span class="badge free-badge">FREE</span>
+                    </div>
+                    <div class="menu-item" data-query="tc_sorgu2">
+                        <div class="menu-item-left">
+                            <i class="fas fa-id-card"></i> TC Sorgu 2
+                        </div>
+                        <span class="badge free-badge">FREE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GSM İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>GSM İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category4">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="gsm_sorgu1">
+                        <div class="menu-item-left">
+                            <i class="fas fa-mobile-alt"></i> GSM Sorgu 1
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="gsm_sorgu2">
+                        <div class="menu-item-left">
+                            <i class="fas fa-mobile-alt"></i> GSM Sorgu 2
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aile ve Hane İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Aile ve Hane İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category5">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="aile_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-home"></i> Aile Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="sulale_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-users"></i> Sülale Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="hane_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-house-user"></i> Hane Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İş Yeri ve Vesika İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>İş Yeri ve Vesika İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category6">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="isyeri_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-building"></i> İş Yeri Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="vesika_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-file-alt"></i> Vesika Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ad-Soyad İşlemleri - SADECE AD-SOYAD SORGUSU FREE -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Ad-Soyad İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category7">
+                    <!-- FREE Sorgu -->
+                    <div class="menu-item" data-query="adsoyad_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user"></i> Ad-Soyad Sorgu
+                        </div>
+                        <span class="badge free-badge">FREE</span>
+                    </div>
+                    <!-- VIP Sorgular -->
+                    <div class="menu-item" data-query="sicil_ad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user"></i> Sicil Ad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="sicil_soyad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user"></i> Sicil Soyad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="sicil_adsoyad">
+                        <div class="menu-item-left">
+                            <i class="fas fa-id-card"></i> Sicil Ad-Soyad Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sicil / ID İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Sicil / ID İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category8">
+                    <!-- VIP Sorgu -->
+                    <div class="menu-item" data-query="sicil_id">
+                        <div class="menu-item-left">
+                            <i class="fas fa-id-badge"></i> Sicil ID Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nüfus ve Resmi Kurum İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Nüfus ve Resmi Kurum İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category9">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="nufus_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-users"></i> Nüfus Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="adli_sicil">
+                        <div class="menu-item-left">
+                            <i class="fas fa-gavel"></i> Adli Sicil Kayıt
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="pasaport_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-passport"></i> Pasaport Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="ehliyet_sorgu">
+                        <div class="menu-item-left">
+                            <i class="fas fa-id-card"></i> Ehliyet Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="meb_mezuniyet">
+                        <div class="menu-item-left">
+                            <i class="fas fa-graduation-cap"></i> MEB Mezuniyet
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="noter_islem">
+                        <div class="menu-item-left">
+                            <i class="fas fa-stamp"></i> Noter İşlem
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağlık İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Sağlık İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category10">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="asi_kayitlari">
+                        <div class="menu-item-left">
+                            <i class="fas fa-syringe"></i> Aşı Kayıtları
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="rontgen_listesi">
+                        <div class="menu-item-left">
+                            <i class="fas fa-x-ray"></i> Röntgen Listesi
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="kronik_hastalik">
+                        <div class="menu-item-left">
+                            <i class="fas fa-heartbeat"></i> Kronik Hastalık
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="hasta_yatis">
+                        <div class="menu-item-left">
+                            <i class="fas fa-procedures"></i> Hasta Yatış Geçmişi
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="recete_gecmisi">
+                        <div class="menu-item-left">
+                            <i class="fas fa-prescription"></i> Reçete Geçmişi
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vergi ve Ticaret İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Vergi ve Ticaret İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category11">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="vergi_borc">
+                        <div class="menu-item-left">
+                            <i class="fas fa-file-invoice-dollar"></i> Vergi Borç Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="ticaret_sikayet">
+                        <div class="menu-item-left">
+                            <i class="fas fa-comment-alt"></i> Ticaret Şikayet Kaydı
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tapu ve Gayrimenkul İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Tapu ve Gayrimenkul İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category12">
+                    <!-- VIP Sorgu -->
+                    <div class="menu-item" data-query="gayrimenkul">
+                        <div class="menu-item-left">
+                            <i class="fas fa-landmark"></i> Gayrimenkul Sorgu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Askerlik İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Askerlik İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category13">
+                    <!-- VIP Sorgu -->
+                    <div class="menu-item" data-query="askerlik_durum">
+                        <div class="menu-item-left">
+                            <i class="fas fa-user-shield"></i> Askerlik Durum
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fatura İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Fatura İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category14">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="ibb_su">
+                        <div class="menu-item-left">
+                            <i class="fas fa-tint"></i> İBB Su Fatura
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="elektrik_fatura">
+                        <div class="menu-item-left">
+                            <i class="fas fa-bolt"></i> Elektrik Fatura
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Turizm ve Ulaşım İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Turizm ve Ulaşım İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category15">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="otel_rezervasyon">
+                        <div class="menu-item-left">
+                            <i class="fas fa-hotel"></i> Otel Rezervasyon
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="istanbulkart_bakiye">
+                        <div class="menu-item-left">
+                            <i class="fas fa-bus"></i> İstanbulkart Bakiye
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="ucak_bilet">
+                        <div class="menu-item-left">
+                            <i class="fas fa-plane"></i> Uçak Bilet
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="seyahat_hareket">
+                        <div class="menu-item-left">
+                            <i class="fas fa-train"></i> Seyahat Hareket
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spor ve Kültür İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Spor ve Kültür İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category16">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="spor_federasyon">
+                        <div class="menu-item-left">
+                            <i class="fas fa-running"></i> Spor Federasyon Kayıt
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="kutuphane_uye">
+                        <div class="menu-item-left">
+                            <i class="fas fa-book"></i> Kütüphane Üye Durum
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banka ve Kredi İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Banka ve Kredi İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category17">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="dijital_banka">
+                        <div class="menu-item-left">
+                            <i class="fas fa-university"></i> Dijital Banka Müşteri
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="kredi_risk">
+                        <div class="menu-item-left">
+                            <i class="fas fa-chart-line"></i> Kredi Risk Raporu
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Çevre ve Doğa İşlemleri - HEPSİ VIP -->
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <span>Çevre ve Doğa İşlemleri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="menu-items" id="category18">
+                    <!-- TÜMÜ VIP -->
+                    <div class="menu-item" data-query="cevre_ceza">
+                        <div class="menu-item-left">
+                            <i class="fas fa-tree"></i> Şehirlerarası Çevre Ceza
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                    <div class="menu-item" data-query="avci_lisans">
+                        <div class="menu-item-left">
+                            <i class="fas fa-hiking"></i> Avcı Lisans
+                        </div>
+                        <span class="badge vip-badge">VIP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Çıkış Butonu -->
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </button>
+        </div>
+    </div>
+
+    <!-- Menü Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Sorgu Paneli &copy; 2024 - Tüm hakları saklıdır. | Her zaman 1numara ;)</p>
+    </div>
+
+    <script>
+        // Hamburger menü açma/kapama işlevi
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuClose = document.getElementById('menuClose');
+
+        menuToggle.addEventListener('click', function() {
+            sideMenu.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        });
+
+        menuClose.addEventListener('click', function() {
+            sideMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+
+        menuOverlay.addEventListener('click', function() {
+            sideMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+
+        // Kategori açma/kapama işlevi
+        const categoryHeaders = document.querySelectorAll('.menu-section-header');
+
+        categoryHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const categoryId = this.nextElementSibling.id;
+                const categoryItems = document.getElementById(categoryId);
+
+                // Kategorinin açık/kapalı durumunu değiştir
+                categoryItems.classList.toggle('active');
+
+                // İkonu döndür
+                if (categoryItems.classList.contains('active')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            });
+        });
+
+        // Küçük butonlara tıklama işlevi
+        const miniButtons = document.querySelectorAll('.mini-button');
+        miniButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const title = this.getAttribute('title');
+
+                if (title === "Market") {
+                    window.location.href = "/market";
+                } else if (title === "Abonelik") {
+                    window.location.href = "/subscription";
+                } else if (title === "Sorgu Geçmişi") {
+                    window.location.href = "/history";
+                } else if (title === "Ayarlar") {
+                    window.location.href = "/profile";
+                }
+            });
+        });
+
+        // Çıkış butonu işlevi
+        const logoutBtn = document.getElementById('logoutBtn');
+        logoutBtn.addEventListener('click', function() {
+            if (confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+                window.location.href = "/logout";
+            }
+        });
+
+        // Menü öğelerine tıklama işlevi - DEĞİŞTİRİLDİ!
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation(); // Üst elementlere tıklamanın yayılmasını engelle
+
+                const queryKey = this.getAttribute('data-query');
+                const badge = this.querySelector('.badge');
+                const badgeType = badge ? badge.classList.contains('vip-badge') ? 'VIP' : 'FREE' : 'FREE';
+
+                // Kullanıcı türünü kontrol et (admin veya vip mi?)
+                fetch('/api/dashboard_stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        const userType = data.username === 'admin' ? 'admin' : 'free'; // Bu backend'den alınacak
+                        
+                        // FREE sorgular herkese açık
+                        const freeQueries = ['tc_sorgu1', 'tc_sorgu2', 'adsoyad_sorgu'];
+                        
+                        if (badgeType === 'VIP') {
+                            // VIP sorgu ise, kullanıcı admin veya vip mi kontrol et
+                            // Bu kontrol backend tarafında yapılacak, biz sadece sorgu sayfasına yönlendiriyoruz
+                            window.location.href = `/query/${queryKey}`;
+                        } else {
+                            // FREE sorgu ise direkt sorgu sayfasına yönlendir
+                            window.location.href = `/query/${queryKey}`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Kullanıcı bilgisi alınamadı:', error);
+                        window.location.href = `/query/${queryKey}`;
+                    });
+            });
+        });
+
+        // ESC tuşu ile menüyü kapatma
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                sideMenu.classList.remove('active');
+                menuOverlay.classList.remove('active');
+            }
+        });
+
+        // Sayfa yüklendiğinde tüm kategorileri kapalı tut
+        document.addEventListener('DOMContentLoaded', function() {
+            // İstatistikleri backend'den al
+            fetch('/api/dashboard_stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector('.total-users').textContent = data.total_users || 0;
+                        document.querySelector('.vip-users').textContent = data.vip_users || 0;
+                        document.querySelector('.free-users').textContent = data.free_users || 0;
+
+                        // Kullanıcı adını güncelle
+                        const usernameElement = document.querySelector('.username');
+                        if (usernameElement) {
+                            usernameElement.textContent = data.username || 'admin';
+                            
+                            // Admin veya VIP ise admin/moderator badge ekle
+                            if (data.username === 'admin') {
+                                const verifiedBadge = document.querySelector('.verified-badge');
+                                if (verifiedBadge) {
+                                    verifiedBadge.style.color = '#ff0000';
+                                    verifiedBadge.title = 'Admin';
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('İstatistikler alınamadı:', error);
+                });
+        });
+    </script>
+</body>
+</html>
