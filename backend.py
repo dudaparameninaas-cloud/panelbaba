@@ -141,9 +141,9 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
-    c.execute("SELECT COUNT(*) FROM users WHERE username = 'admin'")
+    c.execute("SELECT COUNT(*) FROM users WHERE username = 'kahipic'")
     if c.fetchone()[0] == 0:
-        hashed = generate_password_hash(os.environ.get('ADMIN_PASSWORD', 'admin123'))
+        hashed = generate_password_hash(os.environ.get('ADMIN_PASSWORD', 'kahinkedosk'))
         c.execute('INSERT INTO users (username, password, email, user_type, is_active) VALUES (?, ?, ?, ?, ?)',
                   ('admin', hashed, 'admin@sorgupaneli.com', 'admin', 1))
         logger.info("Admin user created (password hashed)")
