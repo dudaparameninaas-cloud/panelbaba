@@ -44,7 +44,7 @@ else:
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
-    default_limits=os.environ.get('DEFAULT_RATE_LIMITS', "500 per day,100 per hour,30 per minute").split(','),
+    default_limits=os.environ.get('DEFAULT_RATE_LIMITS', "5 per day,5 per hour,4 per minute").split(','),
     storage_uri=os.environ.get('RATE_LIMIT_STORAGE', "memory://")
 )
 
